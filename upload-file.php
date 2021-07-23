@@ -127,7 +127,7 @@
 	};// end JavaScript function onSubmitOfForm()
 </script>
 
-<div class="page-title">Upload a File</div>
+<div class="page-title">Upload a File AAAAAAAAAAA</div>
 <div>&nbsp;</div>
 
 <?php 
