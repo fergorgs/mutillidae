@@ -3,34 +3,12 @@
 <?php include_once (__ROOT__.'/includes/hints/hints-menu-wrapper.inc'); ?>
 <?php	
 	try{
-    	switch ($_SESSION["security-level"]){
-    		case "0": // This code is insecure. No input validation is performed.
-				$lEnableJavaScriptValidation = FALSE;
-    			$lEnableHTMLControls = FALSE;
-    			$lValidateFileUpload = FALSE;
-				$lAllowedFileSize = 2000000;
-				$lUploadDirectoryFlag = "CLIENT_DECIDES";
-			break;
+        $lEnableJavaScriptValidation = TRUE;
+        $lEnableHTMLControls = TRUE;
+        $lValidateFileUpload = TRUE;
+        $lAllowedFileSize = 20000;
+        $lUploadDirectoryFlag = "TEMP_DIRECTORY";
 
-    		case "1": // This code is insecure. No input validation is performed.
-				$lEnableJavaScriptValidation = TRUE;
-    			$lEnableHTMLControls = TRUE;
-    			$lValidateFileUpload = FALSE;
-				$lAllowedFileSize = 2000000;
-				$lUploadDirectoryFlag = "CLIENT_DECIDES";
-			break;
-
-	   		case "2":
-	   		case "3":
-	   		case "4":
-    		case "5": // This code is fairly secure
-				$lEnableJavaScriptValidation = TRUE;
-    			$lEnableHTMLControls = TRUE;
-    			$lValidateFileUpload = TRUE;
-				$lAllowedFileSize = 20000;
-				$lUploadDirectoryFlag = "TEMP_DIRECTORY";
-			break;
-    	}// end switch
     	
 		//$lWebServerUploadDirectory = __ROOT__.DIRECTORY_SEPARATOR.'uploads';
     	$lWebServerUploadDirectory = sys_get_temp_dir();
@@ -63,7 +41,7 @@
 			$lValidationMessage = "Validation not performed";
 			$lFileMovedMessage = "Moving file was not attempted";
 			
-			/* File property strings suitible for printing */
+			/* File property strings suitable for printing */
 			if ($lFileSize > 1000){
 				$lFileSizeString = number_format($lFileSize/1000). " KB";
 			}else{
@@ -76,7 +54,7 @@
 				$lAllowedFileSizeString = number_format($lAllowedFileSize). " Bytes";
 			}//end if
 
-			$lFileUploadMessage = "File uploaded to {$lFileTempName}";
+			$lFileUploadMessage = "File uploaded";
 			if ($lFileUploadErrorCode != UPLOAD_ERR_OK) {
 				$lFileUploadMessage = "Error detected during file upload (Code {$lFileUploadErrorCode}). See error output for detail.";
 				throw new FileUploadExceptionHandler($lFileUploadErrorCode);
@@ -105,10 +83,10 @@
 			if ($lFileValid){
 				if (move_uploaded_file($lFileTempName, $lFilePermanentName)) {
 					$lFileMovedSuccessfully = TRUE;
-					$lFileMovedMessage = "File moved to {$lFilePermanentName}";
+					$lFileMovedMessage = "File moved";
 				}else{
 					$lFileMovedSuccessfully = FALSE;
-					$lFileMovedMessage = "Error Detected. Unable to move PHP temp file {$lTempDirectory} to permanent location {$lFilePermanentName}";
+					$lFileMovedMessage = "Error Detected. Unable to move PHP temp file {$lTempDirectory} to permanent location";
 					throw new Exception($lFileMovedMessage);
 				}//end if move_uploaded_file
 			}// end if $lFileValid
@@ -162,7 +140,6 @@
 					<tr><td>&nbsp;</td></tr>
 					<tr><td class='label'>Original File Name</td><td>{$lFilename}</td></tr>
 					<tr><td class='label'>Temporary File Name</td><td>{$lFileTempName}</td></tr>
-					<tr><td class='label'>Permanent File Name</td><td>{$lFilePermanentName}</td></tr>
 					<tr><td class='label'>File Type</td><td>{$lFileType}</td></tr>
 					<tr><td class='label'>File Size</td><td>{$lFileSizeString}</td></tr>
 				</table>	
