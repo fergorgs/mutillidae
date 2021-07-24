@@ -1,4 +1,5 @@
 <?php
+	require_once __ROOT__.'/recaptcha/src/autoload.php';
 
 	function logLoginAttempt($lMessage){
 		try {
@@ -10,6 +11,7 @@
 	};//end function logLoginAttempt
 
     try {
+
 		$lQueryString = "";
     	switch ($_SESSION["security-level"]){
 	   		case "0": // This code is insecure
@@ -52,17 +54,33 @@
 	   	$lKeepGoing = TRUE;
 	   	$lQueryResult=NULL;
 
+
+		if (!isset($_POST['g-recaptcha-response'])) {
+			$lKeepGoind = FALSE;
+		} else {
+			$lCaptcha = $_POST["g-recaptcha-response"];
+			$recaptcha = new \ReCaptcha\ReCaptcha("6Lfeu7obAAAAAFSTzH0jq7YKTqSMsl6UfHdSkT1d");
+			$resp = $recaptcha->setExpectedHostname($_SERVER['SERVER_NAME'])
+                      ->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
+			if (!$resp->isSuccess()){
+				$lKeepGoind = FALSE;
+
+			}
+		}
+
    		logLoginAttempt("User {$lUsername} attempting to authenticate");
 
-   		if (!$SQLQueryHandler->accountExists($lUsername)){
-   		    if ($lConfidentialityRequired){
-   		        $lAuthenticationAttemptResult = $cUSERNAME_OR_PASSWORD_INCORRECT;
-   		    }else{
-   		        $lAuthenticationAttemptResult = $cACCOUNT_DOES_NOT_EXIST;
-   		    }// end if
-   			$lKeepGoing = FALSE;
-   			logLoginAttempt("Login Failed: Account {$lUsername} does not exist");
-   		}// end if accountExists
+		if ($lKeepGoing){
+			if (!$SQLQueryHandler->accountExists($lUsername)){
+   			    if ($lConfidentialityRequired){
+   			        $lAuthenticationAttemptResult = $cUSERNAME_OR_PASSWORD_INCORRECT;
+   			    }else{
+   			        $lAuthenticationAttemptResult = $cACCOUNT_DOES_NOT_EXIST;
+   			    }// end if
+   				$lKeepGoing = FALSE;
+   				logLoginAttempt("Login Failed: Account {$lUsername} does not exist");
+   			}// end if accountExists
+		}
 
 		if ($lKeepGoing){
    			if (!$SQLQueryHandler->authenticateAccount($lUsername, $lPassword)){
@@ -75,14 +93,16 @@
 	   			logLoginAttempt("Login Failed: Password for {$lUsername} incorrect");
 	   		}//end if authenticateAccount
    		}//end if $lKeepGoing
+		
+		if ($lKeepGoing) {
+			$lQueryResult = $SQLQueryHandler->getUserAccount($lUsername, $lPassword);
 
-		$lQueryResult = $SQLQueryHandler->getUserAccount($lUsername, $lPassword);
-
-		if (isset($lQueryResult->num_rows)){
-   			if ($lQueryResult->num_rows > 0) {
-	   			$lAuthenticationAttemptResultFound = TRUE;
-   			}//end if
-		}//end if
+			if (isset($lQueryResult->num_rows)){
+   				if ($lQueryResult->num_rows > 0) {
+	   				$lAuthenticationAttemptResultFound = TRUE;
+   				}//end if
+			}//end if
+		}
 
 		if ($lAuthenticationAttemptResultFound){
 			$lRecord = $lQueryResult->fetch_object();
