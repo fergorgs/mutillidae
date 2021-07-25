@@ -239,6 +239,11 @@ class MySQLHandler {
 	/* ------------------------------------------
  	 * PUBLIC METHODS
  	 * ------------------------------------------ */
+
+	public function encodeQueryParam($pString) {
+		return $this->mMySQLConnection->real_escape_string($pString);
+	}
+
 	public static function databaseAvailable(){
 
 		self::$mDatabaseAvailableMessage = "AVAILABLE";

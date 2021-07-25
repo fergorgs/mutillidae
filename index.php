@@ -16,6 +16,7 @@
 	require_once (__ROOT__.'/classes/RemoteFileHandler.php');
 	require_once (__ROOT__.'/classes/RequiredSoftwareHandler.php');
 
+
     /* ------------------------------------------
      * INITIALIZE SESSION
      * ------------------------------------------ */
@@ -23,45 +24,52 @@
 	    session_start();
 	}// end if
 
+
+	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS']!="on"){
+		require_once('ssl-enforced.php');
+		exit();
+	}
+
+
 	if (!isset($_SESSION["security-level"])){
 	    $_SESSION["security-level"] = 0;
 	}// end if
 
-    /* ----------------------------------------------------
-     * ENFORCE SSL
-     * ----------------------------------------------------
-     * If the user would like to enforce the use of SSL,
-     * redirect any HTTP requests "up to" HTTPS. Otherwise
-     * keep the URL the same.
-     * ---------------------------------------------------- */
+    // /* ----------------------------------------------------
+    //  * ENFORCE SSL
+    //  * ----------------------------------------------------
+    //  * If the user would like to enforce the use of SSL,
+    //  * redirect any HTTP requests "up to" HTTPS. Otherwise
+    //  * keep the URL the same.
+    //  * ---------------------------------------------------- */
     if (!isset($_SESSION["EnforceSSL"])){
     	$_SESSION["EnforceSSL"] = "False";
     }// end if
 
-    switch ($_SESSION["security-level"]){
-    	case "0": // This code is insecure
-    	case "1": // This code is insecure
-		    if ($_SESSION["EnforceSSL"] == "True"){
-		    	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS']!="on"){
-		    		$lSecureRedirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-		    		header("Location: $lSecureRedirect");
-		    		exit();
-		    	}//end if
-		    }//end if
-   		break;
+    // switch ($_SESSION["security-level"]){
+    // 	case "0": // This code is insecure
+    // 	case "1": // This code is insecure
+	// 	    if ($_SESSION["EnforceSSL"] == "True"){
+	// 	    	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS']!="on"){
+	// 	    		$lSecureRedirect = "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	// 	    		header("Location: $lSecureRedirect");
+	// 	    		exit();
+	// 	    	}//end if
+	// 	    }//end if
+   	// 	break;
 
-    	case "2":
-    	case "3":
-    	case "4":
-    	case "5": // This code is fairly secure
-		    if ($_SESSION["EnforceSSL"] == "True"){
-		    	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS']!="on"){
-		    		require_once('ssl-enforced.php');
-		    		exit();
-		    	}//end if
-		    }//end if
-   		break;
-    }// end switch
+    // 	case "2":
+    // 	case "3":
+    // 	case "4":
+    // 	case "5": // This code is fairly secure
+	// 	    if ($_SESSION["EnforceSSL"] == "True"){
+	// 	    	if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS']!="on"){
+	// 	    		require_once('ssl-enforced.php');
+	// 	    		exit();
+	// 	    	}//end if
+	// 	    }//end if
+   	// 	break;
+    // }// end switch
 
     /* ----------------------------------------------------
      * Initialize logged in status
@@ -411,8 +419,23 @@
 		case ".htaccess":
 		case ".htaccess.php":
 		case "secret.php":
-   		case "admin.php":		case "_adm.php":		case "_admin.php":		case "root.php":		case "administrator.php":
-		case "auth.php":		case "hidden.php":		case "console.php":		case "conf.php":		case "_private.php":		case "private.php":		case "access.php":		case "control.php":		case "control-panel.php":		case "bash_history":		case ".history":		case ".htpasswd":
+   		case "admin.php":
+		case "_adm.php":
+		case "_admin.php":
+		case "root.php":
+		case "administrator.php":
+		case "auth.php":
+		case "hidden.php":
+		case "console.php":
+		case "conf.php":
+		case "_private.php":
+		case "private.php":
+		case "access.php":
+		case "control.php":
+		case "control-panel.php":
+		case "bash_history":
+		case ".history":
+		case ".htpasswd":
 		case ".htpasswd.php":
 
    			switch ($_SESSION["security-level"]){

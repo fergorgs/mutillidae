@@ -335,15 +335,9 @@ class SQLQueryHandler {
 	}//end public function getUserAccountByID
 
 	public function getUserAccount($pUsername, $pPassword){
-   		/*
-  		 * Note: While escaping works ok in some case, it is not the best defense.
- 		 * Using stored procedures is a much stronger defense.
- 		 */
 
-		if ($this->stopSQLInjection == TRUE){
-			$pUsername = $this->mMySQLHandler->escapeDangerousCharacters($pUsername);
-			$pPassword = $this->mMySQLHandler->escapeDangerousCharacters($pPassword);
-		}// end if
+		$pUsername = $this->mMySQLHandler->encodeQueryParam($pUsername);
+		$pPassword = $this->mMySQLHandler->encodeQueryParam($pPassword);
 
 		$lQueryString =
 			"SELECT * FROM accounts
