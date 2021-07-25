@@ -120,6 +120,15 @@
 			<tr><td></td></tr>
 			<tr>
 				<td colspan="2" style="text-align:center;">
+					<div 
+						class="g-recaptcha form-field" 
+						data-sitekey="6Lfeu7obAAAAABPxygAxEEJ_9WW37nw6GpjzE-Nu"
+						style="display:flex; justify-content:center"
+					></div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="text-align:center;">
 					<input name="login-php-submit-button" class="button" type="submit" value="Login" />
 				</td>
 			</tr>
@@ -131,6 +140,7 @@
 			</tr>
 		</table>
 	</form>
+	<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=en"></script>
 </div>
 
 <div id="id-log-out-div" style="text-align: center; display: none;">
