@@ -3,13 +3,12 @@
 <?php include_once (__ROOT__.'/includes/hints/hints-menu-wrapper.inc'); ?>
 <?php	
 	try{
-        $lEnableJavaScriptValidation = TRUE;
-        $lEnableHTMLControls = TRUE;
-        $lValidateFileUpload = TRUE;
-        $lAllowedFileSize = 20000;
-        $lUploadDirectoryFlag = "TEMP_DIRECTORY";
-
-    	
+    	$lEnableJavaScriptValidation = TRUE;
+    	$lEnableHTMLControls = TRUE;
+    	$lValidateFileUpload = TRUE;
+		$lAllowedFileSize = 20000;
+		$lUploadDirectoryFlag = "TEMP_DIRECTORY";
+		
 		//$lWebServerUploadDirectory = __ROOT__.DIRECTORY_SEPARATOR.'uploads';
     	$lWebServerUploadDirectory = sys_get_temp_dir();
     	$lFormSubmitted = $lFileMovedSuccessfully = FALSE;
@@ -41,7 +40,7 @@
 			$lValidationMessage = "Validation not performed";
 			$lFileMovedMessage = "Moving file was not attempted";
 			
-			/* File property strings suitable for printing */
+			/* File property strings suitible for printing */
 			if ($lFileSize > 1000){
 				$lFileSizeString = number_format($lFileSize/1000). " KB";
 			}else{
@@ -54,39 +53,38 @@
 				$lAllowedFileSizeString = number_format($lAllowedFileSize). " Bytes";
 			}//end if
 
-			$lFileUploadMessage = "File uploaded";
+			$lFileUploadMessage = "File uploaded to {$lFileTempName}";
 			if ($lFileUploadErrorCode != UPLOAD_ERR_OK) {
 				$lFileUploadMessage = "Error detected during file upload (Code {$lFileUploadErrorCode}). See error output for detail.";
 				throw new FileUploadExceptionHandler($lFileUploadErrorCode);
 			}//end if UPLOAD_ERR_OK
 			
 			$lFileValid = TRUE;
-			if ($lValidateFileUpload){
-				$lValidationMessage = "Validation performed.";
+			
+			$lValidationMessage = "Validation performed.";
 				
-				if (!in_array($lFileExtension, $lAllowedFileExtensions)) {
-					$lValidationMessage .= " File extension {$lFileExtension} not allowed.";
-					$lFileValid = FALSE;
-				}// end if
+			if (!in_array($lFileExtension, $lAllowedFileExtensions)) {
+				$lValidationMessage .= " File extension {$lFileExtension} not allowed.";
+				$lFileValid = FALSE;
+			}// end if
 
-				if (!in_array($lFileType, $lAllowedFileTypes)) {
-					$lValidationMessage .= " File type {$lFileType} not allowed.";
-					$lFileValid = FALSE;
-				}// end if
+			if (!in_array($lFileType, $lAllowedFileTypes)) {
+				$lValidationMessage .= " File type {$lFileType} not allowed.";
+				$lFileValid = FALSE;
+			}// end if
 	
-				if ($lFileSize > $lAllowedFileSize){
-					$lValidationMessage .= "File size {$lFileSizeString} exceeds allowed file size {$lAllowedFileSizeString}.";
-					$lFileValid = FALSE;
-				}// end if
-			}// end if $lValidateFileUpload
+			if ($lFileSize > $lAllowedFileSize){
+				$lValidationMessage .= "File size {$lFileSizeString} exceeds allowed file size {$lAllowedFileSizeString}.";
+				$lFileValid = FALSE;
+			}// end if
 			
 			if ($lFileValid){
 				if (move_uploaded_file($lFileTempName, $lFilePermanentName)) {
 					$lFileMovedSuccessfully = TRUE;
-					$lFileMovedMessage = "File moved";
+					$lFileMovedMessage = "File moved to {$lFilePermanentName}";
 				}else{
 					$lFileMovedSuccessfully = FALSE;
-					$lFileMovedMessage = "Error Detected. Unable to move PHP temp file {$lTempDirectory} to permanent location";
+					$lFileMovedMessage = "Error Detected. Unable to move PHP temp file {$lTempDirectory} to permanent location {$lFilePermanentName}";
 					throw new Exception($lFileMovedMessage);
 				}//end if move_uploaded_file
 			}// end if $lFileValid
@@ -103,11 +101,7 @@
 		try{
 
 			<?php 
-			if($lEnableJavaScriptValidation){
-				echo "var lValidateInput = \"TRUE\"" . PHP_EOL;
-			}else{
-				echo "var lValidateInput = \"FALSE\"" . PHP_EOL;
-			}// end if		
+			echo "var lValidateInput = \"TRUE\"" . PHP_EOL;
 			?>
 
 		    var lMAX_FILE_SIZE = <?php echo $lAllowedFileSize;?>;
@@ -127,7 +121,7 @@
 	};// end JavaScript function onSubmitOfForm()
 </script>
 
-<div class="page-title">Upload a File AAAAAAAAAAA</div>
+<div class="page-title">Upload a File</div>
 <div>&nbsp;</div>
 
 <?php 
@@ -140,6 +134,7 @@
 					<tr><td>&nbsp;</td></tr>
 					<tr><td class='label'>Original File Name</td><td>{$lFilename}</td></tr>
 					<tr><td class='label'>Temporary File Name</td><td>{$lFileTempName}</td></tr>
+					<tr><td class='label'>Permanent File Name</td><td>{$lFilePermanentName}</td></tr>
 					<tr><td class='label'>File Type</td><td>{$lFileType}</td></tr>
 					<tr><td class='label'>File Size</td><td>{$lFileSizeString}</td></tr>
 				</table>	
