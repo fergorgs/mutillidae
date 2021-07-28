@@ -6,7 +6,7 @@
     	$lEnableJavaScriptValidation = TRUE;
     	$lEnableHTMLControls = TRUE;
     	$lValidateFileUpload = TRUE;
-		$lAllowedFileSize = 20000;
+		$lAllowedFileSize = 1000000;
 		$lUploadDirectoryFlag = "TEMP_DIRECTORY";
 		
 		//$lWebServerUploadDirectory = __ROOT__.DIRECTORY_SEPARATOR.'uploads';
@@ -53,7 +53,7 @@
 				$lAllowedFileSizeString = number_format($lAllowedFileSize). " Bytes";
 			}//end if
 
-			$lFileUploadMessage = "File uploaded to {$lFileTempName}";
+			$lFileUploadMessage = "File uploaded to temporary location";
 			if ($lFileUploadErrorCode != UPLOAD_ERR_OK) {
 				$lFileUploadMessage = "Error detected during file upload (Code {$lFileUploadErrorCode}). See error output for detail.";
 				throw new FileUploadExceptionHandler($lFileUploadErrorCode);
@@ -81,10 +81,10 @@
 			if ($lFileValid){
 				if (move_uploaded_file($lFileTempName, $lFilePermanentName)) {
 					$lFileMovedSuccessfully = TRUE;
-					$lFileMovedMessage = "File moved to {$lFilePermanentName}";
+					$lFileMovedMessage = "File moved to permanent location";
 				}else{
 					$lFileMovedSuccessfully = FALSE;
-					$lFileMovedMessage = "Error Detected. Unable to move PHP temp file {$lTempDirectory} to permanent location {$lFilePermanentName}";
+					$lFileMovedMessage = "Error Detected. Unable to move PHP temp file {$lTempDirectory} to permanent location";
 					throw new Exception($lFileMovedMessage);
 				}//end if move_uploaded_file
 			}// end if $lFileValid
@@ -133,8 +133,6 @@
 					<tr><td class='label' colspan='2'>{$lValidationMessage}</td></tr>
 					<tr><td>&nbsp;</td></tr>
 					<tr><td class='label'>Original File Name</td><td>{$lFilename}</td></tr>
-					<tr><td class='label'>Temporary File Name</td><td>{$lFileTempName}</td></tr>
-					<tr><td class='label'>Permanent File Name</td><td>{$lFilePermanentName}</td></tr>
 					<tr><td class='label'>File Type</td><td>{$lFileType}</td></tr>
 					<tr><td class='label'>File Size</td><td>{$lFileSizeString}</td></tr>
 				</table>	
