@@ -244,6 +244,10 @@ class MySQLHandler {
 		return $this->mMySQLConnection->real_escape_string($pString);
 	}
 
+	public function prepareQuery($pQuery) {
+		return $this->mMySQLConnection->prepare($pQuery);
+	}
+
 	public static function databaseAvailable(){
 
 		self::$mDatabaseAvailableMessage = "AVAILABLE";

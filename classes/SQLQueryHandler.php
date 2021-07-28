@@ -339,12 +339,11 @@ class SQLQueryHandler {
 		$pUsername = $this->mMySQLHandler->encodeQueryParam($pUsername);
 		$pPassword = $this->mMySQLHandler->encodeQueryParam($pPassword);
 
-		$lQueryString =
-			"SELECT * FROM accounts
-			WHERE username='".$pUsername.
-			"' AND password='".$pPassword."'";
+		$lFinalQuery = $this->mMySQLHandler->prepareQuery("SELECT * FROM accounts WHERE username = ? AND password = ?");
+		$lFinalQuery->bind_param("ss", $pUsername, $pPassword);
 
-		return $this->mMySQLHandler->executeQuery($lQueryString);
+		$lFinalQuery->execute();
+		return $lFinalQuery->get_result();
 	}//end public function getUserAccount
 
 	/* -----------------------------------------

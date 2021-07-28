@@ -57,11 +57,11 @@
 						return false;
 				};// end if
 				
-				if (theForm.username.value.search(lUnsafeCharacters) > -1 || 
-					theForm.password.value.search(lUnsafeCharacters) > -1){
-						alert('Dangerous characters detected. We can\'t allow these. This all powerful blacklist will stop such attempts.\n\nMuch like padlocks, filtering cannot be defeated.\n\nBlacklisting is l33t like l33tspeak.');
-						return false;
-				};// end if
+				// if (theForm.username.value.search(lUnsafeCharacters) > -1 || 
+				// 	theForm.password.value.search(lUnsafeCharacters) > -1){
+				// 		alert('Dangerous characters detected. We can\'t allow these. This all powerful blacklist will stop such attempts.\n\nMuch like padlocks, filtering cannot be defeated.\n\nBlacklisting is l33t like l33tspeak.');
+				// 		return false;
+				// };// end if
 			};// end if(lValidateInput)
 			
 			return true;
