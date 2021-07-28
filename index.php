@@ -378,36 +378,22 @@
     * ------------------------------------------ */
    	global $lPage;
    	$lPage = __ROOT__.'/home.php';
-	switch ($_SESSION["security-level"]){
-   		case "0": // This code is insecure
-   		case "1": // This code is insecure
-		    // Get the value of the "page" URL query parameter
-		    if (isset($_REQUEST["page"])) {
-		    	$lPage = $_REQUEST["page"];
-		    }// end if
-   		break;
+	/* To prevent page injection, we start with the basic priciple
+  		* of "DENY ALL". We decide to allow only the characters abosolutely
+  		* neccesary to spell the Mutillidae file names. This requires
+  		* alpha, hyphen, and period.
+  		*/
+	// Get the value of the "page" URL query parameter without accepting POST
+	// to prevent method tampering.
+	if (isset($_GET["page"])) {
+		$lPage = $_GET["page"];
+	}// end if
 
-   		case "2":
-   		case "3":
-   		case "4":
-   		case "5": // This code is fairly secure
-  			/* To prevent page injection, we start with the basic priciple
-  			 * of "DENY ALL". We decide to allow only the characters abosolutely
-  			 * neccesary to spell the Mutillidae file names. This requires
-  			 * alpha, hyphen, and period.
-  			 */
-		    // Get the value of the "page" URL query parameter without accepting POST
-		    // to prevent method tampering.
-		    if (isset($_GET["page"])) {
-		    	$lPage = $_GET["page"];
-		    }// end if
-
-   			$lPageIsAllowed = (preg_match("/^[a-zA-Z0-9\.\-\/]+[\.php|\.html]$/", $lPage) == 1);
-   			if (!$lPageIsAllowed){
-		    	$lPage = __ROOT__.'/page-not-found.php';
-   			}// end if
-   		break;
-   	}// end switch
+   	$lPageIsAllowed = (preg_match("/^[a-zA-Z0-9\.\-\/]+[\.php|\.html]$/", $lPage) == 1);
+   	if (!$lPageIsAllowed){
+		$lPage = __ROOT__.'/page-not-found.php';
+   	}// end if
+   	
 	/* ------------------------------------------
     * END "PAGE" VARIABLE INJECTION
     * ------------------------------------------ */
